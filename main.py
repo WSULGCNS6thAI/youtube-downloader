@@ -1,10 +1,11 @@
-from PyQt5.QtWidgets import QApplication, QWidget, QFileDialog
-from PyQt5.QtCore import Qt, QUrl
-from PyQt5.QtGui import QPalette
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 from PyQt5.uic import loadUi
 from media import CMultiMedia
 import sys
 import datetime
+import getpass
  
 QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
  
@@ -22,10 +23,6 @@ class CWidget(QWidget):
         self.view.setAutoFillBackground(True)
         self.view.setPalette(pal)
          
-        # volume, slider
-        self.vol.setRange(0,100)
-        self.vol.setValue(50)
- 
         # play time
         self.duration = ''
  
@@ -33,21 +30,15 @@ class CWidget(QWidget):
         self.btn_add.clicked.connect(self.clickAdd)
         self.btn_del.clicked.connect(self.clickDel)
         self.btn_play.clicked.connect(self.clickPlay)
-        self.btn_stop.clicked.connect(self.clickStop)
         self.btn_pause.clicked.connect(self.clickPause)
-        self.btn_forward.clicked.connect(self.clickForward)
-        self.btn_prev.clicked.connect(self.clickPrev)
- 
         self.list.itemDoubleClicked.connect(self.dbClickList)
-        self.vol.valueChanged.connect(self.volumeChanged)
         self.bar.sliderMoved.connect(self.barChanged)       
-         
  
     def clickAdd(self):
         files, ext = QFileDialog.getOpenFileNames(self
-                                             , 'Select one or more files to open'
-                                             , ''
-                                             , 'Video (*.mp4 *.mpg *.mpeg *.avi *.wma)') 
+                                             , '플레이리스트 추가'
+                                             , 'C:/Users/%s/Downloads/Youtube/Stream'%getpass.getuser()
+                                             , 'Video (*.mp4 *.mpg *.mpeg *.avi *.wma)')
          
         if files:
             cnt = len(files)       
@@ -55,7 +46,6 @@ class CWidget(QWidget):
             for i in range(row, row+cnt):
                 self.list.addItem(files[i-row])
             self.list.setCurrentRow(0)
- 
             self.mp.addMedia(files)
  
     def clickDel(self):
@@ -67,41 +57,14 @@ class CWidget(QWidget):
         index = self.list.currentRow()        
         self.mp.playMedia(index)
  
-    def clickStop(self):
-        self.mp.stopMedia()
- 
     def clickPause(self):
         self.mp.pauseMedia()
- 
-    def clickForward(self):
-        cnt = self.list.count()
-        curr = self.list.currentRow()
-        if curr<cnt-1:
-            self.list.setCurrentRow(curr+1)
-            self.mp.forwardMedia()
-        else:
-            self.list.setCurrentRow(0)
-            self.mp.forwardMedia(end=True)
- 
-    def clickPrev(self):
-        cnt = self.list.count()
-        curr = self.list.currentRow()
-        if curr==0:
-            self.list.setCurrentRow(cnt-1)    
-            self.mp.prevMedia(begin=True)
-        else:
-            self.list.setCurrentRow(curr-1)    
-            self.mp.prevMedia()
- 
+
     def dbClickList(self, item):
         row = self.list.row(item)
         self.mp.playMedia(row)
  
-    def volumeChanged(self, vol):
-        self.mp.volumeMedia(vol)
- 
     def barChanged(self, pos):   
-        print(pos)
         self.mp.posMoveMedia(pos)    
  
     def updateState(self, msg):
@@ -124,7 +87,6 @@ class CWidget(QWidget):
         idx = stime.rfind('.')
         stime = f'{stime[:idx]} / {self.duration}'
         self.playtime.setText(stime)
- 
  
 if __name__ == '__main__':
     app = QApplication(sys.argv)

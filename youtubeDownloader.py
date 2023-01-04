@@ -80,7 +80,7 @@ class MyWindow(QMainWindow):
         self.stream_info.appendPlainText('영상 길이 : %s초'%self.yt.length)
         self.stream_info.appendPlainText('채널 : %s'%self.yt.author)
 
-    def download(self):
+    def download(self): 
         if str(self.download_type.currentText()) == '영상':
             DOWNLOAD_FOLDER = 'C:\\Users\\%s\\Downloads\\Youtube\\Stream'%getpass.getuser()
             stream = self.yt.streams.get_highest_resolution()
@@ -88,6 +88,7 @@ class MyWindow(QMainWindow):
             self.progress.setMaximum(1)
             self.progress.setMinimum(0)
             self.progress.setValue(1)
+
         elif str(self.download_type.currentText()) == '음원':
             DOWNLOAD_FOLDER = 'C:\\Users\\%s\\Downloads\\Youtube\\Music'%getpass.getuser()
             music = self.yt.streams.get_audio_only()
