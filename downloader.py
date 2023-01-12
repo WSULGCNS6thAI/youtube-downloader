@@ -1,6 +1,7 @@
 import sys
 import urllib.request
 import getpass
+import threading
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
@@ -41,20 +42,21 @@ class MyWindow(QMainWindow):
 
         # 영상 정보를 표시하기 위한 공간
         self.stream_info = QPlainTextEdit(self)
-        self.stream_info.resize(1040, 55)
+        self.stream_info.resize(1040, 57)
         self.stream_info.move(20, 570)
 
         # 다운로드 버튼
         self.download_btn = QPushButton('다운로드', self)
         self.download_btn.setFixedWidth(1040)
         self.download_btn.move(20, 630)
-        self.download_btn.clicked.connect(self.download)
+        self.download_btn.setDisabled(True)
+        self.download_btn.clicked.connect(self.thDownload)
 
         # 프로그레스바
         self.progress = QProgressBar(self)
         self.progress.setFixedWidth(1040)
         self.progress.move(20, 665)
-        self.progress.setTextVisible(False)
+        self.progress.setTextVisible(True)
         self.progress.setMaximum(1)
         self.progress.setMinimum(0)
 
@@ -66,7 +68,7 @@ class MyWindow(QMainWindow):
         self.url_string = self.url.text() # 입력한 URL 가져오기
 
         # 입력한 URL에 관한 정보 가져와서 변수에 저장
-        self.yt = YouTube(self.url_string)
+        self.yt = YouTube(self.url_string)    
         self.urlString = self.yt.thumbnail_url 
         self.imageFromWeb = urllib.request.urlopen(self.urlString).read()
 
@@ -80,21 +82,31 @@ class MyWindow(QMainWindow):
         self.stream_info.appendPlainText('영상 길이 : %s초'%self.yt.length)
         self.stream_info.appendPlainText('채널 : %s'%self.yt.author)
 
+        self.download_btn.setEnabled(True) 
+    
     def download(self):
+        self.download_btn.setDisabled(True)
+        
         if str(self.download_type.currentText()) == '영상':
             DOWNLOAD_FOLDER = 'C:\\Users\\%s\\Downloads\\Youtube\\Stream'%getpass.getuser()
             stream = self.yt.streams.get_highest_resolution()
-            stream.download(DOWNLOAD_FOLDER)
+            stream.download(output_path=DOWNLOAD_FOLDER, skip_existing=True)
             self.progress.setMaximum(1)
             self.progress.setMinimum(0)
             self.progress.setValue(1)
+
         elif str(self.download_type.currentText()) == '음원':
             DOWNLOAD_FOLDER = 'C:\\Users\\%s\\Downloads\\Youtube\\Music'%getpass.getuser()
             music = self.yt.streams.get_audio_only()
-            music.download(DOWNLOAD_FOLDER)
+            music.download(output_path=DOWNLOAD_FOLDER, skip_existing=True)
             self.progress.setMaximum(1)
             self.progress.setMinimum(0)
             self.progress.setValue(1)
+
+    def thDownload(self):
+        th1 = threading.Thread(target=self.download)
+        th1.setDaemon(True)
+        th1.start()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

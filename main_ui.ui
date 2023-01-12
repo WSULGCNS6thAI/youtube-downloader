@@ -51,6 +51,13 @@
           </widget>
          </item>
          <item>
+          <widget class="QLabel" name="playtime">
+           <property name="text">
+            <string>0:00:00 / 0:00:00</string>
+           </property>
+          </widget>
+         </item>
+         <item>
             <widget class="QSlider" name="bar">
             <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -64,14 +71,7 @@
          <item>
           <widget class="QLabel" name="state">
            <property name="text">
-            <string>Media Status</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="playtime">
-           <property name="text">
-            <string>Running time</string>
+            <string>일시정지</string>
            </property>
           </widget>
          </item>
@@ -87,7 +87,7 @@
           <enum>Qt::LeftToRight</enum>
          </property>
          <property name="text">
-          <string>Play List</string>
+          <string>플레이리스트</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -100,14 +100,14 @@
        <item>
         <widget class="QPushButton" name="btn_add">
          <property name="text">
-          <string>Add</string>
+          <string>추가</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="btn_del">
          <property name="text">
-          <string>Del</string>
+          <string>삭제</string>
          </property>
         </widget>
        </item>

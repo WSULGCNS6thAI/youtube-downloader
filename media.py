@@ -46,9 +46,9 @@ class CMultiMedia(QObject):
     def stateChanged(self, state):
         msg = ''
         if state==QMediaPlayer.PlayingState:
-            msg = 'Playing'
+            msg = '재생중'
         else:
-            msg = 'Paused'
+            msg = '일시정지'
         self.state_signal.emit(msg)
  
     def durationChanged(self, duration):
