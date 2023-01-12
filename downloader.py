@@ -50,7 +50,7 @@ class MyWindow(QMainWindow):
         self.download_btn.setFixedWidth(1040)
         self.download_btn.move(20, 630)
         self.download_btn.setDisabled(True)
-        self.download_btn.clicked.connect(self.thDownload)
+        self.download_btn.clicked.connect(self.thDownload) # 버튼 클릭 이벤트 연결
 
         # 프로그레스바
         self.progress = QProgressBar(self)
@@ -60,6 +60,7 @@ class MyWindow(QMainWindow):
         self.progress.setMaximum(1)
         self.progress.setMinimum(0)
 
+    # 영상 검색 메서드
     def searchEvent(self):
         self.stream_info.clear()
         self.progress.setValue(0)
@@ -83,6 +84,7 @@ class MyWindow(QMainWindow):
 
         self.download_btn.setEnabled(True) 
     
+    # 다운로드 메서드
     def download(self):
         self.download_btn.setDisabled(True)
         
@@ -98,9 +100,10 @@ class MyWindow(QMainWindow):
 
         self.progress.setValue(1)
 
+    # 다운로드 스레드
     def thDownload(self):
         th1 = threading.Thread(target=self.download)
-        th1.setDaemon(True)
+        th1.setDaemon(True) # 데몬 스레드 == 메인 함수 종료되면 스레드 종료
         th1.start()
 
 if __name__ == '__main__':
