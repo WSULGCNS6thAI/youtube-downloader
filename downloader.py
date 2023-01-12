@@ -56,14 +56,13 @@ class MyWindow(QMainWindow):
         self.progress = QProgressBar(self)
         self.progress.setFixedWidth(1040)
         self.progress.move(20, 665)
-        self.progress.setTextVisible(True)
+        self.progress.setTextVisible(False)
         self.progress.setMaximum(1)
         self.progress.setMinimum(0)
 
     def searchEvent(self):
         self.stream_info.clear()
-        self.progress.setMaximum(0)
-        self.progress.setMinimum(0)
+        self.progress.setValue(0)
 
         self.url_string = self.url.text() # 입력한 URL 가져오기
 
@@ -91,17 +90,13 @@ class MyWindow(QMainWindow):
             DOWNLOAD_FOLDER = 'C:\\Users\\%s\\Downloads\\Youtube\\Stream'%getpass.getuser()
             stream = self.yt.streams.get_highest_resolution()
             stream.download(output_path=DOWNLOAD_FOLDER, skip_existing=True)
-            self.progress.setMaximum(1)
-            self.progress.setMinimum(0)
-            self.progress.setValue(1)
 
         elif str(self.download_type.currentText()) == '음원':
             DOWNLOAD_FOLDER = 'C:\\Users\\%s\\Downloads\\Youtube\\Music'%getpass.getuser()
             music = self.yt.streams.get_audio_only()
             music.download(output_path=DOWNLOAD_FOLDER, skip_existing=True)
-            self.progress.setMaximum(1)
-            self.progress.setMinimum(0)
-            self.progress.setValue(1)
+
+        self.progress.setValue(1)
 
     def thDownload(self):
         th1 = threading.Thread(target=self.download)
